@@ -1,6 +1,10 @@
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes
-from utils.config import M10_ACCOUNT, CARD_NUMBER
+import utils.config as config
+
+M10_ACCOUNT = config.M10_ACCOUNT
+CARD_NUMBER = config.CARD_NUMBER
+
 
 async def payment_method_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
