@@ -10,6 +10,7 @@ API_BASE_URL = os.getenv("API_BASE_URL")
 M10_ACCOUNT = os.getenv("M10_ACCOUNT")
 CARD_NUMBER = os.getenv("CARD_NUMBER")
 
+ADMIN_IDS = os.getenv("ADMIN_IDS")
 
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
@@ -29,6 +30,7 @@ __all__ = [
     "DB_HOST",
     "DB_NAME",
     "DATABASE_URL",
+    "ADMIN_IDS",
     "SUBSCRIPTION_PRICE",
      "M10_ACCOUNT",
     "CARD_NUMBER",
