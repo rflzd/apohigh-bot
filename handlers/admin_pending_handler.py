@@ -3,7 +3,7 @@ from telegram.ext import ContextTypes
 from db.db import SessionLocal
 from db.models.user import User
 from db.models.moderator import Moderator
-from utils.config import ADMIN_IDS
+from utils.config import config
 
 async def pending_payments_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
