@@ -24,12 +24,12 @@ __all__ = [
     "BOT_TOKEN",
     "API_KEY",
     "API_BASE_URL",
-    "M10_ACCOUNT",
-    "CARD_NUMBER",
     "DB_USER",
     "DB_PASSWORD",
     "DB_HOST",
     "DB_NAME",
     "DATABASE_URL",
     "SUBSCRIPTION_PRICE"
+     "M10_ACCOUNT",
+    "CARD_NUMBER",
 ]
