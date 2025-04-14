@@ -21,9 +21,9 @@ async def pending_payments_handler(update: Update, context: ContextTypes.DEFAULT
             f"👤 Ad: {user.full_name}\n"
             f"🆔 Telegram ID: `{user.telegram_id}`\n"
         )
-        buttons = InlineKeyboardMarkup([
-            [InlineKeyboardButton("✅ Təsdiqlə", callback_data=f"forward_admin_{user.telegram_id}")]
-        ])
+        buttons = InlineKeyboardMarkup([[
+            InlineKeyboardButton("✅ Təsdiqlə", callback_data=f"forward_admin_{user.telegram_id}")
+        ]])
         try:
             await update.message.reply_photo(
                 photo=user.payment_proof_url,
