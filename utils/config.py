@@ -10,6 +10,7 @@ API_BASE_URL = os.getenv("API_BASE_URL")
 M10_ACCOUNT = os.getenv("M10_ACCOUNT")
 CARD_NUMBER = os.getenv("CARD_NUMBER")
 
+
 DB_USER = os.getenv("DB_USER")
 DB_PASSWORD = os.getenv("DB_PASSWORD")
 DB_HOST = os.getenv("DB_HOST")
