@@ -2,9 +2,7 @@ from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler,
     CallbackQueryHandler, ContextTypes, filters
 )
-from utils.config import BOT_TOKEN
-
-# Handlerlər
+from config import BOT_TOKEN
 from handlers.start_handler import start_command
 from handlers.mode_handler import mode_handler
 from handlers.league_handler import league_handler
@@ -18,33 +16,27 @@ from handlers.payment_method_handler import payment_method_handler
 from handlers.payment_upload_handler import payment_upload_handler
 from handlers.admin_pending_handler import pending_payments_handler
 from handlers.forward_to_admin_handler import forward_to_admin_handler
-from handlers.admin_approve_handler import approve_payment_handler
-from handlers.profile_handler import profile_handler
 
-
-# ✅ Əvvəl bot obyektini yarat
+# Bot obyektini yarat
 app = ApplicationBuilder().token(BOT_TOKEN).build()
 
-# Komanda handlerləri
+# Komandalar
 app.add_handler(CommandHandler("start", start_command))
 app.add_handler(CommandHandler("addfav", add_favorite_handler))
 app.add_handler(CommandHandler("pending", pending_payments_handler))
-app.add_handler(CommandHandler("approve", approve_payment_handler))
-app.add_handler(CommandHandler("profile", profile_handler))
 
-# Callback düymələr
+# Callback & media
 app.add_handler(CallbackQueryHandler(forward_to_admin_handler, pattern="^forward_admin_"))
 app.add_handler(CallbackQueryHandler(payment_method_handler, pattern="^pay_"))
-
-# Mesajlara əsaslanan handlerlər
-app.add_handler(MessageHandler(filters.Regex("Abunə ol"), subscribe_info_handler))
 app.add_handler(MessageHandler(filters.PHOTO, payment_upload_handler))
+
+# Menü düymələri
+app.add_handler(MessageHandler(filters.Regex("Abunə ol"), subscribe_info_handler))
 app.add_handler(MessageHandler(filters.Regex("Sevimli komandalar 💖"), favorites_handler))
 app.add_handler(MessageHandler(filters.Regex("Kupon analizi 🎯"), bet_analysis_handler))
 app.add_handler(MessageHandler(filters.Regex("^(⚽ Canlı|📅 Prematch)$"), mode_handler))
 
-
-# Əsas oyun axını (axın sırası vacibdir)
+# Əsas oyun axını
 app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), league_handler))
 app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), match_list_handler))
 app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), match_detail_handler))

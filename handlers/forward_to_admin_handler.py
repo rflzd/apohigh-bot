@@ -2,39 +2,37 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from db.db import SessionLocal
 from db.models.user import User
-from utils.config import config
 
 async def forward_to_admin_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    
+
+    if not query.data.startswith("forward_admin_"):
+        return
+
     try:
         telegram_id = int(query.data.split("_")[-1])
-    except:
-        await query.message.reply_text("⚠️ ID formatı xətalıdır.")
+    except ValueError:
+        await query.message.reply_text("❌ Telegram ID düzgün formatda deyil.")
         return
 
     session = SessionLocal()
     user = session.query(User).filter_by(telegram_id=telegram_id).first()
-    session.close()
 
     if not user:
-        await query.message.reply_text("İstifadəçi tapılmadı.")
+        await query.message.reply_text("❌ İstifadəçi tapılmadı.")
+        session.close()
         return
 
-    caption = (
-        f"📤 Moderator tərəfindən yönləndirildi:\n"
-        f"👤 {user.full_name or 'Naməlum'}\n"
-        f"🆔 Telegram ID: `{user.telegram_id}`\n"
-        f"✅ Təsdiqlə: `/approve {user.telegram_id}`"
-    )
+    user.is_subscribed = True
+    session.commit()
+    session.close()
 
-    for admin_id in ADMIN_IDS:
-        await context.bot.send_photo(
-            chat_id=admin_id,
-            photo=user.payment_proof_url,
-            caption=caption,
-            parse_mode="Markdown"
+    try:
+        await context.bot.send_message(
+            chat_id=telegram_id,
+            text="🎉 Abunəliyiniz təsdiqləndi! Artıq premium funksiyalara girişiniz var."
         )
-
-    await query.message.reply_text("✅ Şəkil adminə göndərildi.")
+        await query.message.reply_text("✅ İstifadəçi uğurla premium edildi.")
+    except Exception as e:
+        print(f"İstifadəçiyə mesaj göndərilərkən xəta: {e}")

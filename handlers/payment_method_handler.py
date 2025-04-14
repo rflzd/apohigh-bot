@@ -1,6 +1,6 @@
-from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import Update
 from telegram.ext import ContextTypes
-import utils.config as config
+from config import M10_ACCOUNT, CARD_NUMBER, SUBSCRIPTION_PRICE
 
 async def payment_method_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
@@ -9,23 +9,20 @@ async def payment_method_handler(update: Update, context: ContextTypes.DEFAULT_T
     if query.data == "pay_m10":
         text = (
             f"💰 *M10 ilə ödəniş üçün:*\n"
-            f"➡️ Hesab nömrəsi: `{config.M10_ACCOUNT}`\n\n"
-            "📤 Zəhmət olmasa ödənişi etdikdən sonra çeki yükləyin."
+            f"➡️ M10 Hesab: `{M10_ACCOUNT}`\n"
+            f"💳 Məbləğ: *{SUBSCRIPTION_PRICE}*\n\n"
+            f"📤 Zəhmət olmasa ödənişi etdikdən sonra çeki yükləyin.\n"
+            f"Ödəniş yoxlanıldıqdan sonra abunəliyiniz aktiv ediləcək ✅"
         )
-        copy_button = InlineKeyboardButton("📋 Kopyala M10 Hesabı", switch_inline_query_current_chat=config.M10_ACCOUNT)
-
     elif query.data == "pay_card2card":
         text = (
             f"💳 *Kartla ödəniş üçün:*\n"
-            f"➡️ Kart nömrəsi: `{config.CARD_NUMBER}`\n\n"
-            "📤 Zəhmət olmasa ödənişi etdikdən sonra çeki yükləyin."
+            f"➡️ Kart nömrəsi: `{CARD_NUMBER}`\n"
+            f"💳 Məbləğ: *{SUBSCRIPTION_PRICE}*\n\n"
+            f"📤 Zəhmət olmasa ödənişi etdikdən sonra çeki yükləyin.\n"
+            f"Ödəniş yoxlanıldıqdan sonra abunəliyiniz aktiv ediləcək ✅"
         )
-        copy_button = InlineKeyboardButton("📋 Kopyala Kart Nömrəsi", switch_inline_query_current_chat=config.CARD_NUMBER)
-
     else:
-        text = "Seçim tapılmadı."
-        copy_button = None
+        text = "⚠️ Seçim tapılmadı."
 
-    keyboard = InlineKeyboardMarkup([[copy_button]]) if copy_button else None
-
-    await query.message.reply_text(text, parse_mode="Markdown", reply_markup=keyboard)
+    await query.message.reply_text(text, parse_mode="Markdown")

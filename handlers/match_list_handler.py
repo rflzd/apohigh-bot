@@ -1,26 +1,38 @@
-from telegram import Update, ReplyKeyboardMarkup
+from telegram import Update
 from telegram.ext import ContextTypes
-from utils.api import get_matches_by_league_name
+from services.highlightly import get_matches
 
 async def match_list_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    league_name = update.message.text
-    mode = context.user_data.get("mode")
+    text = update.message.text
 
-    matches = get_matches_by_league_name(league_name, mode)
+    if not text.isdigit():
+        return
+
+    leagues = context.user_data.get("leagues")
+    if not leagues:
+        return
+
+    idx = int(text) - 1
+    if idx < 0 or idx >= len(leagues):
+        await update.message.reply_text("Yanlış seçim. Zəhmət olmasa düzgün nömrə daxil edin.")
+        return
+
+    selected_league = leagues[idx]
+    context.user_data["selected_league"] = selected_league
+
+    matches = await get_matches(
+        mode=context.user_data.get("mode"),
+        league_id=selected_league["league_id"]
+    )
 
     if not matches:
-        await update.message.reply_text("Bu liqa üçün uyğun oyun tapılmadı.")
+        await update.message.reply_text("Heç bir oyun tapılmadı.")
         return
 
     context.user_data["matches"] = matches
+    msg = f"📋 {selected_league['league_name']} üçün oyunlar:\n\n"
+    for idx, match in enumerate(matches):
+        msg += f"{idx + 1}. {match['home_team']} vs {match['away_team']}\n"
 
-    # Oyun siyahısı keyboard
-    keyboard = []
-    for match in matches:
-        title = f"{match['homeTeam']['name']} vs {match['awayTeam']['name']}"
-        keyboard.append([title])
-
-    await update.message.reply_text(
-        "Oyunlardan birini seçin:",
-        reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-    )
+    msg += "\nZəhmət olmasa baxmaq istədiyiniz oyunun nömrəsini yazın (məs: 2)"
+    await update.message.reply_text(msg)

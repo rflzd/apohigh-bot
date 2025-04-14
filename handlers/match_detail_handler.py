@@ -1,45 +1,37 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from utils.api import get_match_details
-from ai_analysis.analyzer import generate_ai_analysis
-from db.db import SessionLocal
-from db.models.user import User
+from services.highlightly import get_match_detail
 
 async def match_detail_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-    selected_text = update.message.text
-    matches = context.user_data.get("matches", [])
+    text = update.message.text
 
-    # Uyğun oyunu tap
-    selected_match = next((m for m in matches if selected_text in f"{m['homeTeam']['name']} vs {m['awayTeam']['name']}"), None)
-    
-    if not selected_match:
-        await update.message.reply_text("Uyğun oyun tapılmadı.")
+    if not text.isdigit():
         return
 
-    match_id = selected_match["id"]
-    match_info = get_match_details(match_id)
-
-    if not match_info:
-        await update.message.reply_text("Oyun detalları yüklənə bilmədi.")
+    matches = context.user_data.get("matches")
+    if not matches:
         return
 
-    match = match_info[0]
-    home = match["homeTeam"]["name"]
-    away = match["awayTeam"]["name"]
-    state = match["state"]
-    start_time = match["startDate"]
+    idx = int(text) - 1
+    if idx < 0 or idx >= len(matches):
+        await update.message.reply_text("Yanlış seçim. Zəhmət olmasa düzgün nömrə daxil edin.")
+        return
 
-    msg = f"📊 *{home} vs {away}*\n🕒 {start_time}\n📌 Status: {state}"
+    selected_match = matches[idx]
+    context.user_data["selected_match"] = selected_match
+
+    match_id = selected_match["match_id"]
+    match_data = await get_match_detail(match_id)
+
+    if not match_data:
+        await update.message.reply_text("Oyun detalları tapılmadı.")
+        return
+
+    msg = f"📊 *{match_data['home_team']} vs {match_data['away_team']}*\n"
+    msg += f"🕒 {match_data['time']}\n"
+    msg += f"📍 {match_data['league_name']}\n\n"
+    msg += f"📈 Oranlar:\n"
+    for odd in match_data.get("odds", []):
+        msg += f" - {odd['type']}: {odd['value']}\n"
+
     await update.message.reply_text(msg, parse_mode="Markdown")
-
-    # Abunəlik yoxlanışı
-    session = SessionLocal()
-    user = session.query(User).filter_by(telegram_id=user_id).first()
-    session.close()
-
-    if user and user.is_subscribed:
-        ai_analysis = generate_ai_analysis(match)
-        await update.message.reply_text(f"🤖 AI Analizi:\n{ai_analysis}", parse_mode="Markdown")
-    else:
-        await update.message.reply_text("🔒 AI analizi üçün abunə olun.")

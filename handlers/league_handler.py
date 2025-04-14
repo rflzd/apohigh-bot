@@ -1,31 +1,26 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from utils.api import get_leagues_by_country
-from utils.flags import extract_country_name_from_flag
+from utils.flag_to_country import flag_to_country  # Əgər istifadə olunursa
+from services.highlightly import get_leagues  # API-dən liqaları çəkən funksiya
 
 async def league_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    input_text = update.message.text
-    country_name = input_text
+    text = update.message.text
+    mode = context.user_data.get("mode")
 
-    # Əgər bayraq göndəribsə, onu ölkə adına çevir
-    if any(char in input_text for char in range(0x1F1E6, 0x1F1FF)):
-        country_name = extract_country_name_from_flag(input_text)
+    if not mode:
+        return  # Heç bir seçim etməyibsə, cavab vermə
 
-    if not country_name:
-        await update.message.reply_text("Ölkə adı və ya bayraq düzgün deyil. Yenidən yoxlayın.")
-        return
+    country = flag_to_country(text) or text.strip().lower()
+    context.user_data["country"] = country
 
-    leagues = get_leagues_by_country(country_name)
-
+    leagues = await get_leagues(mode=mode, country=country)
     if not leagues:
-        await update.message.reply_text(f"'{country_name}' üçün heç bir liqa tapılmadı.")
+        await update.message.reply_text("Heç bir liqa tapılmadı. Başqa ölkə adı və ya bayraq göndərin.")
         return
 
-    keyboard = [[league['name']] for league in leagues]
-    context.user_data["country"] = country_name
     context.user_data["leagues"] = leagues
+    msg = "Aşağıdakı liqalardan birini seçin:\n\n"
+    msg += "\n".join([f"{idx+1}. {l['league_name']}" for idx, l in enumerate(leagues)])
+    msg += "\n\nSadəcə nömrəni yazın (məs: 1)"
 
-    await update.message.reply_text(
-        f"{country_name} üçün mövcud liqalar:",
-        reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-    )
+    await update.message.reply_text(msg)

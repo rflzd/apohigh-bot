@@ -9,20 +9,15 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     full_name = update.effective_user.full_name
 
     user = session.query(User).filter_by(telegram_id=user_id).first()
-
     if not user:
         user = User(telegram_id=user_id, full_name=full_name)
         session.add(user)
         session.commit()
 
-    # Abunəlik statusuna əsasən menyunu formalaşdır
-    buttons = [["⚽ Canlı", "📅 Prematch"]]
-    if user and user.is_subscribed:
-        buttons.append(["Sevimli komandalar 💖"])
-
     session.close()
 
+    keyboard = [["⚽ Canlı", "📅 Prematch"], ["Abunə ol"]]
     await update.message.reply_text(
-        "Xoş gəlmisiniz Apohigh botuna!\nSeçim edin:",
-        reply_markup=ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+        "Xoş gəlmisiniz Apohigh botuna!\nZəhmət olmasa bir seçim edin:",
+        reply_markup=ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     )

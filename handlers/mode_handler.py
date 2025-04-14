@@ -1,14 +1,12 @@
-from telegram import Update, ReplyKeyboardMarkup
-from telegram.ext import ContextTypes, MessageHandler, filters
+from telegram import Update
+from telegram.ext import ContextTypes
 
 async def mode_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    text = update.message.text.lower()
+    text = update.message.text
 
-    if "canlı" in text:
+    if text == "⚽ Canlı":
         context.user_data["mode"] = "live"
-        await update.message.reply_text("🇺🇳 Hansı ölkənin liqasını izləmək istəyirsiniz? Bayraq göndərin və ya ad yazın.")
-    elif "prematch" in text:
+        await update.message.reply_text("🇦🇿 Zəhmət olmasa izləmək istədiyiniz ölkənin adını və ya bayrağını göndərin:")
+    elif text == "📅 Prematch":
         context.user_data["mode"] = "prematch"
-        await update.message.reply_text("🇺🇳 Hansı ölkənin liqasını izləmək istəyirsiniz? Bayraq göndərin və ya ad yazın.")
-    else:
-        await update.message.reply_text("Zəhmət olmasa 'Canlı' və ya 'Prematch' seçimlərindən birini edin.")
+        await update.message.reply_text("🇹🇷 Zəhmət olmasa izləmək istədiyiniz ölkənin adını və ya bayrağını göndərin:")
