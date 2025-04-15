@@ -7,7 +7,7 @@ from handlers.start_handler import start_command
 from handlers.mode_handler import mode_handler
 from handlers.league_handler import league_handler
 from handlers.match_list_handler import match_list_handler
-from handlers.match_detail_handler import match_detail_handler
+from handlers.match_handler import match_detail_handler
 from handlers.favorites_handler import favorites_handler
 from handlers.add_favorite_handler import add_favorite_handler
 from handlers.bet_analysis_handler import bet_analysis_handler
