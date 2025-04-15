@@ -1,30 +1,82 @@
-# services/highlightly.py
-
 import os
-import requests
+import aiohttp
 from dotenv import load_dotenv
 
 load_dotenv()
 
-API_BASE_URL = os.getenv("API_BASE_URL")
-RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY")
+API_BASE_URL = "https://soccer.highlightly.net"
+API_KEY = os.getenv("RAPIDAPI_KEY")
 
 headers = {
-    "x-rapidapi-key": RAPIDAPI_KEY
+    "x-rapidapi-key": API_KEY,
+    "accept": "application/json",
 }
 
-def get_leagues(limit=10, offset=0, countryCode=None, season=None):
-    params = {
-        "limit": limit,
-        "offset": offset
-    }
-
-    if countryCode:
-        params["countryCode"] = countryCode
-    if season:
-        params["season"] = season
-
+async def get_leagues(mode: str, country: str):
     url = f"{API_BASE_URL}/leagues"
-    response = requests.get(url, headers=headers, params=params)
-    response.raise_for_status()
-    return response.json()
+    params = {"mode": mode, "country": country}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers, params=params) as resp:
+            if resp.status != 200:
+                return None
+            return await resp.json()
+
+async def get_matches(mode: str, league_id: int):
+    url = f"{API_BASE_URL}/matches"
+    params = {"mode": mode, "league_id": league_id}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers, params=params) as resp:
+            if resp.status != 200:
+                return None
+            return await resp.json()
+
+async def get_match_detail(match_id: int):
+    url = f"{API_BASE_URL}/matches/{match_id}"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers) as resp:
+            if resp.status != 200:
+                return None
+            return await resp.json()
+
+async def get_h2h(team1_id: int, team2_id: int):
+    url = f"{API_BASE_URL}/head-2-head"
+    params = {"teamIdOne": team1_id, "teamIdTwo": team2_id}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers, params=params) as resp:
+            if resp.status != 200:
+                return None
+            return await resp.json()
+
+async def get_odds(match_id: int, odds_type: str = "prematch"):
+    url = f"{API_BASE_URL}/odds"
+    params = {"matchId": match_id, "type": odds_type}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers, params=params) as resp:
+            if resp.status != 200:
+                return None
+            return await resp.json()
+
+async def get_statistics(match_id: int):
+    url = f"{API_BASE_URL}/statistics/{match_id}"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers) as resp:
+            if resp.status != 200:
+                return None
+            return await resp.json()
+
+async def get_lineups(match_id: int):
+    url = f"{API_BASE_URL}/lineups/{match_id}"
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers) as resp:
+            if resp.status != 200:
+                return None
+            return await resp.json()
+
+async def get_team_statistics(team_id: int, from_date: str):
+    url = f"{API_BASE_URL}/teams/statistics"
+    params = {"teamId": team_id, "fromDate": from_date}
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers, params=params) as resp:
+            if resp.status != 200:
+                return None
+            return await resp.json()
