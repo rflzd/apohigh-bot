@@ -11,8 +11,7 @@ from handlers.payment_upload_handler import payment_upload_handler
 from handlers.subscribe_info_handler import subscribe_info_handler
 from handlers.favorites_handler import favorites_handler
 from handlers.bet_analysis_handler import bet_analysis_handler
-from handlers.live_match_list_handler import live_match_list_handler
-from handlers.prematch_match_list_handler import prematch_match_list_handler
+from handlers.match_list_handler import match_list_handler  # Canlı və prematch üçün match_list_handler
 from handlers.match_detail_handler import match_detail_handler
 
 # Veritabanını inicializasiya edirik
@@ -41,8 +40,8 @@ app.add_handler(MessageHandler(filters.Regex("Sevimli komandalar 💖"), favorit
 app.add_handler(MessageHandler(filters.Regex("Kupon analizi 🎯"), bet_analysis_handler))
 
 # Oyun siyahıları (tablar)
-app.add_handler(MessageHandler(filters.Regex("Canlı"), live_match_list_handler))
-app.add_handler(MessageHandler(filters.Regex("Prematch"), prematch_match_list_handler))
+app.add_handler(MessageHandler(filters.Regex("Canlı"), match_list_handler))  # Canlı oyunlar üçün
+app.add_handler(MessageHandler(filters.Regex("Prematch"), match_list_handler))  # Prematch oyunları üçün
 
 # Oyun detalları
 app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), match_detail_handler))
