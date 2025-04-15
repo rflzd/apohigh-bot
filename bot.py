@@ -34,6 +34,7 @@ app.add_handler(MessageHandler(filters.PHOTO, payment_upload_handler))
 app.add_handler(MessageHandler(filters.Regex("Abunə ol"), subscribe_info_handler))
 app.add_handler(MessageHandler(filters.Regex("Sevimli komandalar 💖"), favorites_handler))
 app.add_handler(MessageHandler(filters.Regex("Kupon analizi 🎯"), bet_analysis_handler))
+app.add_handler(MessageHandler(filters.Regex("^(⚽ Canlı|📅 Prematch)$"), mode_handler))
 app.add_handler(MessageHandler(filters.Regex("Canlı"), live_match_list_handler))
 app.add_handler(MessageHandler(filters.Regex("Prematch"), prematch_match_list_handler))
 
