@@ -9,8 +9,7 @@ async def live_match_list_handler(update: Update, context: ContextTypes.DEFAULT_
         await update.message.reply_text("Hazırda canlı oyun yoxdur.")
         return
 
-    message = "📺 *Canlı Oyunlar:*
-"
+    message = "\U0001F4FA *Canlı Oyunlar:*\n"
 
     context.user_data["matches"] = []
 
@@ -22,6 +21,7 @@ async def live_match_list_handler(update: Update, context: ContextTypes.DEFAULT_
         context.user_data["matches"].append({"match_id": match["id"]})
 
     await update.message.reply_text(message, parse_mode="Markdown")
+
 
 
 async def prematch_match_list_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
