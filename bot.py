@@ -3,7 +3,7 @@ from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler,
     CallbackQueryHandler, ContextTypes, filters
 )
-from config import BOT_TOKEN
+from config import BOT_TOKEN, ADMIN_IDS
 from handlers.start_handler import start_command
 from handlers.mode_handler import mode_handler
 from handlers.match_handler import (
@@ -20,12 +20,24 @@ from handlers.payment_upload_handler import payment_upload_handler
 from handlers.admin_pending_handler import pending_payments_handler
 from handlers.forward_to_admin_handler import forward_to_admin_handler
 
+# Admin yoxlama funksiyası
+async def admin_check(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    if user_id not in ADMIN_IDS:
+        await update.message.reply_text("🚫 Siz admin deyilsiniz. Bu funksiya yalnız adminlər üçün əlçatandır.")
+        return False
+    return True
+
 # Bot obyektini yarat
 app = ApplicationBuilder().token(BOT_TOKEN).build()
 
 # Komandalar
 app.add_handler(CommandHandler("start", start_command))
 app.add_handler(CommandHandler("addfav", add_favorite_handler))
+app.add_handler(CommandHandler("pending", pending_payments_handler))
+
+# Admin komandaları
+app.add_handler(CommandHandler("approve", approve_payment_handler))
 app.add_handler(CommandHandler("pending", pending_payments_handler))
 
 # Callback & media

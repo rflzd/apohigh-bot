@@ -20,8 +20,12 @@ async def match_list_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
     selected_league = leagues[idx]
     context.user_data["selected_league"] = selected_league
 
+    # Fetch mode from user context
+    mode = context.user_data.get("mode", "live")  # Default to live if no mode is set
+
+    # Get matches based on selected mode
     matches = await get_matches(
-        mode=context.user_data.get("mode"),
+        mode=mode,
         league_id=selected_league["league_id"]
     )
 

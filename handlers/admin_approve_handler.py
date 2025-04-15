@@ -3,8 +3,12 @@ from telegram.ext import ContextTypes
 from db.db import SessionLocal
 from db.models.user import User
 from datetime import datetime, timedelta
+from .admin_check import admin_check  # Admin yoxlama funksiyasını əlavə et
 
 async def approve_payment_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if not await admin_check(update, context):
+        return  # Əgər admin yoxdursa, funksiyanı icra etmirik
+
     if not context.args:
         await update.message.reply_text("🛑 Zəhmət olmasa istifadəçi ID-sini yazın. Misal: /approve 123456789")
         return
