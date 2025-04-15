@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, BigInteger, Text, Boolean, DateTime
+from sqlalchemy import Column, Integer, BigInteger, String, Boolean, DateTime, JSON
 from sqlalchemy.sql import func
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -7,13 +7,16 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True)
-    telegram_id = Column(BigInteger, unique=True, nullable=False)
-    full_name = Column(Text)
+    telegram_id = Column(BigInteger, primary_key=True, index=True)
+    full_name = Column(String)
     is_subscribed = Column(Boolean, default=False)
-    favorite_teams = Column(Text)  # JSON formatını saxlayır
-    coupon_upload_link = Column(Text)
-    payment_proof_url = Column(Text)
+    favorite_teams = Column(JSON)  # JSON formatında saxlanır
+    coupon_upload_link = Column(String)
+    payment_proof_url = Column(String)
     subscription_start = Column(DateTime, nullable=True)
     subscription_end = Column(DateTime, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    @classmethod
+    def get_user(cls, telegram_id):
+        return cls.query.filter_by(telegram_id=telegram_id).first()  # Veritabanından istifadəçi məlumatını alır
