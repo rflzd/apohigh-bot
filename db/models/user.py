@@ -1,14 +1,12 @@
 from sqlalchemy import Column, Integer, BigInteger, String, Boolean, DateTime, JSON
 from sqlalchemy.sql import func
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
+from db.models import Base  # Burada Base modelini import edirik
 
 class User(Base):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     telegram_id = Column(BigInteger, primary_key=True, index=True)
-    full_name = Column(String(255))  # VARCHAR(255) təyin edilir
+    full_name = Column(String(255))  # VARCHAR(255)
     is_subscribed = Column(Boolean, default=False)
     favorite_teams = Column(JSON)  # JSON formatında saxlanır
     coupon_upload_link = Column(String(255))  # VARCHAR(255)
