@@ -1,3 +1,4 @@
+from telegram import Update
 from telegram.ext import (
     ApplicationBuilder, CommandHandler, MessageHandler,
     CallbackQueryHandler, ContextTypes, filters
@@ -5,9 +6,11 @@ from telegram.ext import (
 from config import BOT_TOKEN
 from handlers.start_handler import start_command
 from handlers.mode_handler import mode_handler
-from handlers.league_handler import league_handler
-from handlers.match_list_handler import match_list_handler
-from handlers.match_handler import match_detail_handler
+from handlers.match_handler import (
+    live_match_list_handler,
+    prematch_match_list_handler,
+    match_detail_handler
+)
 from handlers.favorites_handler import favorites_handler
 from handlers.add_favorite_handler import add_favorite_handler
 from handlers.bet_analysis_handler import bet_analysis_handler
@@ -34,22 +37,13 @@ app.add_handler(MessageHandler(filters.PHOTO, payment_upload_handler))
 app.add_handler(MessageHandler(filters.Regex("Abunə ol"), subscribe_info_handler))
 app.add_handler(MessageHandler(filters.Regex("Sevimli komandalar 💖"), favorites_handler))
 app.add_handler(MessageHandler(filters.Regex("Kupon analizi 🎯"), bet_analysis_handler))
-app.add_handler(MessageHandler(filters.Regex("^(⚽ Canlı|📅 Prematch)$"), mode_handler))
+
+# Oyun siyahıları (tablar)
 app.add_handler(MessageHandler(filters.Regex("Canlı"), live_match_list_handler))
 app.add_handler(MessageHandler(filters.Regex("Prematch"), prematch_match_list_handler))
 
-async def main_flow_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if "league_stage" not in context.user_data:
-        await league_handler(update, context)
-        context.user_data["league_stage"] = "shown"
-    elif "match_list_stage" not in context.user_data:
-        await match_list_handler(update, context)
-        context.user_data["match_list_stage"] = "shown"
-    else:
-        await match_detail_handler(update, context)
-        context.user_data.clear()  # sıfırla axının sonu üçün
-
-app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), main_flow_handler))
+# Oyun detalları
+app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), match_detail_handler))
 
 # Botu işə sal
 if __name__ == "__main__":

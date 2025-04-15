@@ -1,14 +1,62 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from services.highlightly import (
-    get_match_detail,
-    get_odds,
-    get_h2h,
-    get_lineups
-)
-from db.db import SessionLocal
-from db.models.user import User
+from services.highlightly import get_live_matches, get_prematch_matches
 from rapidfuzz.fuzz import ratio
+
+async def live_match_list_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    matches = await get_live_matches()
+    if not matches:
+        await update.message.reply_text("Hazırda canlı oyun yoxdur.")
+        return
+
+    message = "\U0001F4FA *Canlı Oyunlar:*
+\n"
+    context.user_data["matches"] = []
+
+    for idx, match in enumerate(matches[:10], start=1):
+        home = match["home_team"]
+        away = match["away_team"]
+        time = match.get("time", "--:--")
+        message += f"{idx}. {home} vs {away} ({time})\n"
+        context.user_data["matches"].append({"match_id": match["id"]})
+
+    await update.message.reply_text(message, parse_mode="Markdown")
+
+
+async def prematch_match_list_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_input = update.message.text.strip().lower()
+    all_matches = await get_prematch_matches()
+    if not all_matches:
+        await update.message.reply_text("Prematch oyun yoxdur.")
+        return
+
+    scored_matches = []
+    for match in all_matches:
+        home = match["home_team"]
+        away = match["away_team"]
+        teams_combined = f"{home} vs {away}"
+        score = ratio(user_input, teams_combined.lower())
+        if score >= 60:
+            scored_matches.append((score, match))
+
+    filtered = sorted(scored_matches, key=lambda x: x[1].get("start_time", ""))[:10]
+
+    if not filtered:
+        await update.message.reply_text("Uyğun prematch oyun tapılmadı.")
+        return
+
+    message = "\U0001F4C5 *Uyğun Prematch Oyunlar:*\n\n"
+    context.user_data["matches"] = []
+
+    for idx, (_, match) in enumerate(filtered, start=1):
+        home = match["home_team"]
+        away = match["away_team"]
+        time = match.get("start_time", "--:--")
+        message += f"{idx}. {home} vs {away} ({time})\n"
+        context.user_data["matches"].append({"match_id": match["id"]})
+
+    await update.message.reply_text(message, parse_mode="Markdown")
+
 
 async def match_detail_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
@@ -28,6 +76,10 @@ async def match_detail_handler(update: Update, context: ContextTypes.DEFAULT_TYP
     selected_match = matches[idx]
     context.user_data["selected_match"] = selected_match
     match_id = selected_match["match_id"]
+
+    from services.highlightly import get_match_detail, get_odds, get_h2h, get_lineups
+    from db.db import SessionLocal
+    from db.models.user import User
 
     session = SessionLocal()
     user = session.query(User).filter_by(telegram_id=update.effective_user.id).first()
