@@ -1,10 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base  # Bu əslində doğru yerləşdirilmişdir
-from config import DATABASE_URL
+from config import DATABASE_URL  # DATABASE_URL config faylından alınır
 
 # Veritabanı engine və session konfiqurasiyası
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})  # SQLite üçün əlavə etdik (əgər SQLite istifadə olunursa)
+engine = create_engine(DATABASE_URL)  # connect_args parametresi lazım deyil
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # SQLAlchemy bazası
