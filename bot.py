@@ -1,36 +1,25 @@
 from telegram import Update
-from telegram.ext import (
-    ApplicationBuilder, CommandHandler, MessageHandler,
-    CallbackQueryHandler, ContextTypes, filters
-)
-from config import BOT_TOKEN, ADMIN_IDS
-from handlers.start_handler import start_command
-from handlers.mode_handler import mode_handler
-from handlers.match_handler import (
-    live_match_list_handler,
-    prematch_match_list_handler,
-    match_detail_handler
-)
-from handlers.favorites_handler import favorites_handler
+from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, MessageHandler, filters
+from config import BOT_TOKEN  # config.py-dən BOT_TOKEN-i alırıq
+from db.db import init_db
 from handlers.add_favorite_handler import add_favorite_handler
-from handlers.bet_analysis_handler import bet_analysis_handler
-from handlers.subscribe_info_handler import subscribe_info_handler
-from handlers.payment_method_handler import payment_method_handler
-from handlers.admin_approve_handler import approve_payment_handler
-from handlers.payment_upload_handler import payment_upload_handler
 from handlers.admin_pending_handler import pending_payments_handler
+from handlers.approve_payment_handler import approve_payment_handler
 from handlers.forward_to_admin_handler import forward_to_admin_handler
+from handlers.payment_method_handler import payment_method_handler
+from handlers.payment_upload_handler import payment_upload_handler
+from handlers.subscribe_info_handler import subscribe_info_handler
+from handlers.favorites_handler import favorites_handler
+from handlers.bet_analysis_handler import bet_analysis_handler
+from handlers.live_match_list_handler import live_match_list_handler
+from handlers.prematch_match_list_handler import prematch_match_list_handler
+from handlers.match_detail_handler import match_detail_handler
 
-# Admin yoxlama funksiyası
-async def admin_check(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user_id = update.effective_user.id
-    if user_id not in ADMIN_IDS:
-        await update.message.reply_text("🚫 Siz admin deyilsiniz. Bu funksiya yalnız adminlər üçün əlçatandır.")
-        return False
-    return True
+# Veritabanını inicializasiya edirik
+init_db()  # Bu funksiya veritabanı cədvəllərini yaradacaq
 
 # Bot obyektini yarat
-app = ApplicationBuilder().token(BOT_TOKEN).build()
+app = ApplicationBuilder().token(BOT_TOKEN).build()  # config.py-dən BOT_TOKEN-i çəkirik
 
 # Komandalar
 app.add_handler(CommandHandler("start", start_command))

@@ -11,7 +11,7 @@ class User(Base):
     telegram_id = Column(BigInteger, unique=True, nullable=False)
     full_name = Column(Text)
     is_subscribed = Column(Boolean, default=False)
-    favorite_teams = Column(Text)  # JSON, string və ya vergüllə ayrılmış format
+    favorite_teams = Column(Text)  # JSON formatını saxlayır
     coupon_upload_link = Column(Text)
     payment_proof_url = Column(Text)
     subscription_start = Column(DateTime, nullable=True)
