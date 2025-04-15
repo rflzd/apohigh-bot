@@ -6,3 +6,5 @@ Base = declarative_base()
 # Modelləri import edirik
 from .user import User  # User modelini import edirik
 from .favorite_team import FavoriteTeam  # FavoriteTeam modelini import edirik
+from .league import League
+from .match import Match
