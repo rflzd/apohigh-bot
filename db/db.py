@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from db.models import Base  # Base modelini düzgün import edirik
+from db.models import Base  # Burada Base modelini init.py-dən import edirik
 from config import DATABASE_URL  # DATABASE_URL config faylından alınır
 
 # Engine və session konfiqurasiyası
