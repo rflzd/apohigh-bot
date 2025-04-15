@@ -1,5 +1,4 @@
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, MessageHandler, filters
+from telegram.ext import CommandHandler, ApplicationBuilder, CallbackQueryHandler, MessageHandler, filters
 from config import BOT_TOKEN  # config.py-dən BOT_TOKEN-i alırıq
 from db.db import init_db
 from handlers.add_favorite_handler import add_favorite_handler
@@ -11,8 +10,10 @@ from handlers.payment_upload_handler import payment_upload_handler
 from handlers.subscribe_info_handler import subscribe_info_handler
 from handlers.favorites_handler import favorites_handler
 from handlers.bet_analysis_handler import bet_analysis_handler
-from handlers.match_list_handler import match_list_handler  # Canlı və prematch üçün match_list_handler
+from handlers.live_match_list_handler import live_match_list_handler
+from handlers.prematch_match_list_handler import prematch_match_list_handler
 from handlers.match_detail_handler import match_detail_handler
+from handlers.start_handler import start_command  # start_command funksiyasını import edirik
 
 # Veritabanını inicializasiya edirik
 init_db()  # Bu funksiya veritabanı cədvəllərini yaradacaq
@@ -21,7 +22,7 @@ init_db()  # Bu funksiya veritabanı cədvəllərini yaradacaq
 app = ApplicationBuilder().token(BOT_TOKEN).build()  # config.py-dən BOT_TOKEN-i çəkirik
 
 # Komandalar
-app.add_handler(CommandHandler("start", start_command))
+app.add_handler(CommandHandler("start", start_command))  # start_command ilə start komandasını əlavə edirik
 app.add_handler(CommandHandler("addfav", add_favorite_handler))
 app.add_handler(CommandHandler("pending", pending_payments_handler))
 
@@ -40,8 +41,8 @@ app.add_handler(MessageHandler(filters.Regex("Sevimli komandalar 💖"), favorit
 app.add_handler(MessageHandler(filters.Regex("Kupon analizi 🎯"), bet_analysis_handler))
 
 # Oyun siyahıları (tablar)
-app.add_handler(MessageHandler(filters.Regex("Canlı"), match_list_handler))  # Canlı oyunlar üçün
-app.add_handler(MessageHandler(filters.Regex("Prematch"), match_list_handler))  # Prematch oyunları üçün
+app.add_handler(MessageHandler(filters.Regex("Canlı"), live_match_list_handler))
+app.add_handler(MessageHandler(filters.Regex("Prematch"), prematch_match_list_handler))
 
 # Oyun detalları
 app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), match_detail_handler))
