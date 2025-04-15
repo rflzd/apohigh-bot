@@ -49,4 +49,4 @@ app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), match_detail_h
 # Botu işə sal
 if __name__ == "__main__":
     print("🤖 Bot işə düşdü...")
-    app.run_polling(drop_pending_updates=True)  # Dəyişiklik: drop_pending_updates parametri ilə əvvəlki tələbləri sıfırlayırıq
+    app.run_polling(drop_pending_updates=True)  # Burada drop_pending_updates parametri əlavə etdik
