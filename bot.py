@@ -10,7 +10,7 @@ from handlers.payment_upload_handler import payment_upload_handler
 from handlers.subscribe_info_handler import subscribe_info_handler
 from handlers.favorites_handler import favorites_handler
 from handlers.bet_analysis_handler import bet_analysis_handler
-from handlers.match_list_handler import match_list_handler  # İki funksiya yerinə tək import edirik
+from handlers.match_list_handler import match_list_handler  # Tək import edirik
 from handlers.match_detail_handler import match_detail_handler
 from handlers.start_handler import start_command  # start_command funksiyasını import edirik
 
@@ -49,4 +49,4 @@ app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), match_detail_h
 # Botu işə sal
 if __name__ == "__main__":
     print("🤖 Bot işə düşdü...")
-    app.run_polling()
+    app.run_polling(drop_pending_updates=True)  # Dəyişiklik: drop_pending_updates parametri ilə əvvəlki tələbləri sıfırlayırıq
