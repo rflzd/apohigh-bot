@@ -1,5 +1,5 @@
 from db.db import engine
-from db.models import Base  # Düzgün Base modelini import edirik
+from db.models import Base  # Burada Base modelini düzgün import edirik
 
 def init_db():
     # Veritabanı cədvəllərini yaratmaq
