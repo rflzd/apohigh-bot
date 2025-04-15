@@ -5,14 +5,14 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = 'users'
 
     telegram_id = Column(BigInteger, primary_key=True, index=True)
-    full_name = Column(String)
+    full_name = Column(String(255))  # VARCHAR(255) təyin edilir
     is_subscribed = Column(Boolean, default=False)
     favorite_teams = Column(JSON)  # JSON formatında saxlanır
-    coupon_upload_link = Column(String)
-    payment_proof_url = Column(String)
+    coupon_upload_link = Column(String(255))  # VARCHAR(255)
+    payment_proof_url = Column(String(255))  # VARCHAR(255)
     subscription_start = Column(DateTime, nullable=True)
     subscription_end = Column(DateTime, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())

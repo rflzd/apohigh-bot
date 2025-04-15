@@ -1,15 +1,15 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base  # Bu əslində doğru yerləşdirilmişdir
+from db.models import Base  # Base modelini import edirik
 from config import DATABASE_URL  # DATABASE_URL config faylından alınır
 
-# Veritabanı engine və session konfiqurasiyası
+# Engine və session konfiqurasiyası
 engine = create_engine(DATABASE_URL)  # connect_args parametresi lazım deyil
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# SQLAlchemy bazası
+# Base modelini deklarativ bazaya əlavə edirik
 Base = declarative_base()
 
-# Veritabanı cədvəllərini yaratmaq üçün funksiyanı əlavə edə bilərik
 def init_db():
+    # Veritabanı cədvəllərini yaratmaq
     Base.metadata.create_all(bind=engine)
