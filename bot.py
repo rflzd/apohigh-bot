@@ -16,6 +16,7 @@ from handlers.add_favorite_handler import add_favorite_handler
 from handlers.bet_analysis_handler import bet_analysis_handler
 from handlers.subscribe_info_handler import subscribe_info_handler
 from handlers.payment_method_handler import payment_method_handler
+from handlers.admin_approve_handler import approve_payment_handler
 from handlers.payment_upload_handler import payment_upload_handler
 from handlers.admin_pending_handler import pending_payments_handler
 from handlers.forward_to_admin_handler import forward_to_admin_handler
