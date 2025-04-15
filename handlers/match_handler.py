@@ -9,7 +9,9 @@ async def live_match_list_handler(update: Update, context: ContextTypes.DEFAULT_
         await update.message.reply_text("Hazırda canlı oyun yoxdur.")
         return
 
-    message = "\U0001F4FA *Canlı Oyunlar:*\n"
+    message = "📺 *Canlı Oyunlar:*
+"
+
     context.user_data["matches"] = []
 
     for idx, match in enumerate(matches[:10], start=1):
