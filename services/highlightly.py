@@ -23,9 +23,9 @@ async def get_leagues(mode: str, country: str):
             return await resp.json()
 
 
-async def get_matches(mode: str, league_id: int):
+async def get_matches(mode: str, league_id: int, timezone: str = "Asia/Baku"):
     url = f"{API_BASE_URL}/matches"
-    params = {"mode": mode, "league_id": league_id}
+    params = {"mode": mode, "league_id": league_id, "timezone": timezone}
     async with aiohttp.ClientSession() as session:
         async with session.get(url, headers=headers, params=params) as resp:
             if resp.status != 200:

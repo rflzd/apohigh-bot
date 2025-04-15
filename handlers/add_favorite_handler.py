@@ -1,37 +1,23 @@
 from telegram import Update
 from telegram.ext import ContextTypes
 from db.db import SessionLocal
-from db.models.user import User
+from db.models.favorite_team import FavoriteTeam
 
 async def add_favorite_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # İstifadəçinin komandası
+    team_name = update.message.text.strip()
+    
+    # Veritabanında yoxlayırıq
     session = SessionLocal()
-    user_id = update.effective_user.id
-    text = update.message.text.strip()
+    existing_team = session.query(FavoriteTeam).filter_by(team_name=team_name).first()
 
-    user = session.query(User).filter_by(telegram_id=user_id).first()
-
-    if not user:
-        await update.message.reply_text("❌ İstifadəçi tapılmadı. Zəhmət olmasa /start yazın.")
-        session.close()
-        return
-
-    if not text:
-        await update.message.reply_text("❗ Komanda adı boş ola bilməz.")
-        session.close()
-        return
-
-    if user.favorite_teams:
-        teams = user.favorite_teams.split(",")
-        if text in teams:
-            await update.message.reply_text("⚠️ Bu komanda artıq sevimlilərinizdə var.")
-            session.close()
-            return
-        teams.append(text)
-        user.favorite_teams = ",".join(teams)
+    if existing_team:
+        await update.message.reply_text(f"⚠️ Bu komanda artıq sevimli komandalarınıza əlavə olunub: {team_name}")
     else:
-        user.favorite_teams = text
-
-    session.commit()
+        # Yeni komanda əlavə edirik
+        new_team = FavoriteTeam(team_name=team_name, user_id=update.message.from_user.id)
+        session.add(new_team)
+        session.commit()
+        await update.message.reply_text(f"✅ {team_name} komandası sevimli komandalarınıza əlavə olundu.")
+    
     session.close()
-
-    await update.message.reply_text(f"✅ {text} sevimli komandalarınıza əlavə olundu!")

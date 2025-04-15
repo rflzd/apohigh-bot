@@ -23,10 +23,11 @@ async def match_list_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
     # Fetch mode from user context
     mode = context.user_data.get("mode", "live")  # Default to live if no mode is set
 
-    # Get matches based on selected mode
+    # Get matches based on selected mode and timezone Asia/Baku
     matches = await get_matches(
         mode=mode,
-        league_id=selected_league["league_id"]
+        league_id=selected_league["league_id"],
+        timezone="Asia/Baku"  # Bakı zaman zonası
     )
 
     if not matches:
