@@ -2,6 +2,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from services.highlightly import get_matches
 from db.models.user import User  # User modelini import edirik
+from db.models.match import insert_matches  # insert_matches funksiyasını import edirik
 
 async def match_list_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
@@ -35,9 +36,12 @@ async def match_list_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
         await update.message.reply_text("Heç bir oyun tapılmadı.")
         return
 
-    context.user_data["matches"] = matches
+    # Matçları verilənlər bazasına əlavə edirik
+    insert_matches(matches['data'])
+
+    context.user_data["matches"] = matches['data']
     msg = f"📋 {selected_league['league_name']} üçün oyunlar:\n\n"
-    for idx, match in enumerate(matches):
+    for idx, match in enumerate(matches['data']):
         msg += f"{idx + 1}. {match['home_team']} vs {match['away_team']}\n"
 
     msg += "\nZəhmət olmasa baxmaq istədiyiniz oyunun nömrəsini yazın (məs: 2)"
@@ -46,7 +50,7 @@ async def match_list_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
     # Sevimli komandalar və abunəlik yoxlaması
     user = User.get_user(update.message.from_user.id)
     if user and user.is_subscribed:  # Yalnız abunə olanlar üçün
-        for match in matches:
+        for match in matches['data']:
             if match["home_team"] in user.favorite_teams or match["away_team"] in user.favorite_teams:
                 # Canlı oyun varsa, istifadəçiyə məlumat göndəririk
                 await update.message.reply_text(

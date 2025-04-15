@@ -1,6 +1,8 @@
 import os
 import aiohttp
 from dotenv import load_dotenv
+from db.db import SessionLocal
+from db.models.match import Match
 
 load_dotenv()
 
@@ -96,3 +98,19 @@ async def get_team_statistics(team_id: int, from_date: str):
             if resp.status != 200:
                 return None
             return await resp.json()
+
+# Verilənlər bazasına matçları əlavə etmək
+def insert_matches(matches_data):
+    db = SessionLocal()
+    for match in matches_data:
+        db_match = Match(
+            match_id=match['match_id'],
+            league_id=match['league_id'],
+            home_team=match['home_team'],
+            away_team=match['away_team'],
+            start_time=match['start_time'],
+            status=match['status']
+        )
+        db.add(db_match)
+    db.commit()
+    db.close()
