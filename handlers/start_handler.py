@@ -3,7 +3,7 @@ from telegram.ext import ContextTypes
 from db.base import SessionLocal
 from db.models.user import User
 
-async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     session = SessionLocal()
     user_id = update.effective_user.id
     full_name = update.effective_user.full_name
