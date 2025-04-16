@@ -2,9 +2,12 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import os
+from dotenv import load_dotenv
 
-# .env ya configdən çək
+load_dotenv()  # ← Bu sətri əlavə et
+
 DATABASE_URL = os.getenv("DATABASE_URL")
+
 
 # SQLAlchemy Base və engine yaratmaq
 engine = create_engine(DATABASE_URL)
