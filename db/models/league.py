@@ -6,7 +6,7 @@ class League(Base):
     __tablename__ = "leagues"
 
     id = Column(Integer, primary_key=True, index=True)
-    league_name = Column(String, unique=True, nullable=False)
+    league_name = Column(String(255), unique=True, nullable=False)
 
-    # League modelində matches ilə əlaqəni göstəririk
     matches = relationship("Match", back_populates="league")
+    teams = relationship("Team", back_populates="league")  # Komandalarla əlaqə
