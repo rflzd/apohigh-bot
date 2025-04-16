@@ -1,4 +1,4 @@
-from db.db import engine, Base  # Engine və Base import edirik
+from db.base import engine, Base  # Engine və Base import edirik
 from db.models import League, Match, User, FavoriteTeam, Team  # Cədvəlləri import edirik
 
 def init_db():
