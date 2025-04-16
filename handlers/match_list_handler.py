@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import ContextTypes
 from services.highlightly import get_matches
 from db.models.user import User  # User modelini import edirik
-from db.models.match import insert_matches  # insert_matches funksiyasını import edirik
+from db.services.match_service import insert_matches  # insert_matches funksiyasını import edirik
 
 async def match_list_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
