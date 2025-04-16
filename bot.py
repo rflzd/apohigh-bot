@@ -12,7 +12,7 @@ from handlers.favorites_handler import favorites_handler
 from handlers.bet_analysis_handler import bet_analysis_handler
 from handlers.match_list_handler import match_list_handler  # Tək import edirik
 from handlers.match_detail_handler import match_detail_handler
-from handlers.start_handler import start_command  # start_command funksiyasını import edirik
+from handlers.start_handler import start  # start_command funksiyasını import edirik
 
 # Veritabanını inicializasiya edirik
 init_db()  # Bu funksiya veritabanı cədvəllərini yaradacaq
@@ -21,7 +21,7 @@ init_db()  # Bu funksiya veritabanı cədvəllərini yaradacaq
 app = ApplicationBuilder().token(BOT_TOKEN).build()  # config.py-dən BOT_TOKEN-i çəkirik
 
 # Komandalar
-app.add_handler(CommandHandler("start", start_command))  # start_command ilə start komandasını əlavə edirik
+app.add_handler(CommandHandler("start", start))  # start_command ilə start komandasını əlavə edirik
 app.add_handler(CommandHandler("addfav", add_favorite_handler))
 app.add_handler(CommandHandler("pending", pending_payments_handler))
 
