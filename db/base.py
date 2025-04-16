@@ -1,15 +1,18 @@
-from sqlalchemy.orm import declarative_base
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 import os
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 from dotenv import load_dotenv
 
-load_dotenv()  # ← Bu sətri əlavə et
+# .env faylındakı dəyişənləri oxumaq üçün
+load_dotenv()
 
+# İndi DATABASE_URL artıq mövcuddur
 DATABASE_URL = os.getenv("DATABASE_URL")
 
+if DATABASE_URL is None:
+    raise ValueError("❌ DATABASE_URL not found. .env file properly loaded?")
 
-# SQLAlchemy Base və engine yaratmaq
+# SQLAlchemy üçün baza obyektləri
+Base = declarative_base()
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
