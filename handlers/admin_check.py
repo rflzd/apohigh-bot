@@ -1,5 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
+from db.base import SessionLocal
 from config import ADMIN_IDS
 
 async def admin_check(update: Update, context: ContextTypes.DEFAULT_TYPE):
