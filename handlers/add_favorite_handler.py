@@ -1,6 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from db.db import SessionLocal
+from db.base import SessionLocal
 from db.models.favorite_team import FavoriteTeam
 
 async def add_favorite_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
