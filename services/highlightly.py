@@ -1,7 +1,7 @@
 import os
 import aiohttp
 from dotenv import load_dotenv
-from db.db import SessionLocal
+from db.base import SessionLocal
 from db.models.match import Match
 
 load_dotenv()

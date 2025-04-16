@@ -1,8 +1,7 @@
-from db.db import engine
-from db.models import Base  # Burada Base modelini düzgün import edirik
+from db.base import engine, Base  # ← doğru yer
+from db.models import match, league  # modelləri burada çağırmalıyıq
 
 def init_db():
-    # Veritabanı cədvəllərini yaratmaq
     Base.metadata.create_all(bind=engine)
     print('✅ Database cədvəlləri yaradıldı')
 

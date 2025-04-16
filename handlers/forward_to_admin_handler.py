@@ -1,6 +1,6 @@
 from telegram import Update
 from telegram.ext import ContextTypes
-from db.db import SessionLocal
+from db.base import SessionLocal
 from db.models.user import User
 
 async def forward_to_admin_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):

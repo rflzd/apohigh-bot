@@ -1,6 +1,6 @@
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ContextTypes
-from db.db import SessionLocal
+from db.base import SessionLocal
 from db.models.user import User
 
 async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):

@@ -1,6 +1,6 @@
 from telegram import Update, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import ContextTypes
-from db.db import SessionLocal
+from db.base import SessionLocal
 from db.models.user import User
 from .admin_check import admin_check  # Admin yoxlama funksiyasını əlavə et
 
